@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import telebot
+import requests
 import text_recognition as tr
 import database_provider as db
 import difflib
+import os
 
 TOKEN = '1591401263:AAECT7GwBHbB8nrB9Ds7Q49J8LwUxbYvR68'
 bot = telebot.TeleBot(TOKEN)
@@ -34,10 +36,9 @@ def send_text(message):
 
 @bot.message_handler(content_types=['photo'])
 def send_meme(message):
-    import requests
     file_info = bot.get_file(message.photo[-1].file_id)
     downloaded_file = bot.download_file(file_info.file_path)
-    src = 'D:\\PycharmProjects\\MemeBot\\photos\\' + message.photo[-1].file_id + '.jpg'
+    src = os.path.join('.', 'photos', message.photo[-1].file_id + '.jpg')
     with open(src, 'wb') as new_file:
         new_file.write(downloaded_file)
 
