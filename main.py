@@ -60,17 +60,45 @@ def get_n_closest(user_id, text):
     paths, key_words = db.get_user_memes(user_id)
     lst = []
     for i in range(len(paths)):
-        lst.append((difflib.SequenceMatcher(None, key_words[i], text).ratio() * (len(key_words[i]) + len(text)), paths[i]))
+        lst.append((get_text_coeff(key_words[i], text), paths[i]))
     lst.sort(reverse=True)
     print(lst)
     response = []
     for i in range(len(lst)):
-        if lst[i][0] < 6.0 or len(response) == 3:
+        if lst[i][0] < 100 or len(response) == 3:
             break
         response.append(lst[i][1])
 
     return response
 
 
+def get_text_coeff(text1, text2):
+    words1 = text1.split(' ')
+    words2 = text2.split(' ')
+    response = 0
+    for i in range(len(words2)):
+        for j in range(len(words1)):
+            aa = get_words_coeff(words1[j], words2[i])
+            if not aa == 0:
+                print(words2[i])
+                print(words1[j])
+                print(aa)
+            response += aa
+            # response += get_words_coeff(text1[j], text2[i])
+    # print(words1)
+    # print(words2)
+    # print(response)
+    return response
+
+
+def get_words_coeff(word1, word2):
+    if word1 == word2:
+        return 1000
+
+    for i in range(1, len(word2) // 2):
+        if word2[i:] in word1 or word2[:-i] in word1:
+            return 100
+
+    return 0
 bot.polling()
 
